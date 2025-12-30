@@ -12,6 +12,7 @@ let currentRate = 1;
 let vergiOrani = 5;
 let currentFilter = 'all';
 let currentSort = 'name-asc';
+let currentJurisdiction = 'tmk'; // ✅ Kanun sistemi: 'tmk' veya 'usa'
 
 // ==========================
 // DENEME SÜRESİ KONTROL (IPC)
@@ -201,6 +202,28 @@ if (btnYukle) btnYukle.innerHTML = '<i class="fa-solid fa-upload"></i> <span dat
 const themeToggle = document.getElementById("themeToggle");
 const temaSecici = document.getElementById("temaSecici");
 const dilSecici = document.getElementById("dilSecici");
+const jurisdictionSelect = document.getElementById("jurisdictionSelect"); // ✅ Kanun selector
+
+// ✅ KANUN SİSTEMİ DEĞİŞİKLİĞİ EVENT LISTENER
+if (jurisdictionSelect) {
+  jurisdictionSelect.addEventListener('change', (e) => {
+    currentJurisdiction = e.target.value; // 'tmk' veya 'usa'
+    console.log('📋 Kanun sistemi değişti:', currentJurisdiction);
+    
+    // Eğer daha önce hesaplama yapılmışsa, yeniden hesapla
+    if (sonucData.length > 0 || varliklar.length > 0) {
+      // Mirasçı verilerini oku
+      const es = document.getElementById("esVar").checked;
+      const cocukSayisi = parseInt(document.getElementById("cocukSayisi").value) || 0;
+      const anneSayisi = document.getElementById("anneVar").checked ? 1 : 0;
+      const babaSayisi = document.getElementById("babaVar").checked ? 1 : 0;
+      const kardesSayisi = parseInt(document.getElementById("kardesSayisi").value) || 0;
+      
+      // Yeniden hesapla
+      hesapla();
+    }
+  });
+}
 
 const translations = {
   tr: {
@@ -680,7 +703,8 @@ function tabloCiz(mirascilar) {
   const alan = document.getElementById("sonucAlan");
   alan.innerHTML = "";
 
-  sonucData = varlikBazliDagitim(varliklar, mirascilar);
+  const jurisdiction = currentJurisdiction === 'usa' ? 'USA' : 'TR'; // ✅ Kanuna göre
+  sonucData = varlikBazliDagitim(varliklar, mirascilar, jurisdiction);
   window.sonucData = sonucData; // 🔴 KRİTİK EKLEME
 
    // Filtre/sıralama için listeyi hazırla
