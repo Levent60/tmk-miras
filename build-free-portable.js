@@ -111,16 +111,3 @@ try {
     console.error('⚠️  dist yeniden adlandırılamadı:', e.message);
   }
 }
-} catch (error) {
-  console.error('❌ Hata:', error.message);
-  
-  // Hata durumunda .env'yi geri dön
-  try {
-    if (fs.existsSync(envBackup)) {
-      fs.copyFileSync(envBackup, envMain);
-      fs.unlinkSync(envBackup);
-    }
-  } catch (e) {}
-  
-  process.exit(1);
-}
