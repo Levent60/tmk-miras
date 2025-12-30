@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Giriş</title>
+    <style>
+      body{font-family:Inter,Segoe UI,Helvetica,Arial;margin:0;background:#f5f7fb;color:#111;display:flex;align-items:center;justify-content:center;height:100vh}
+      .card{background:#fff;border-radius:12px;padding:22px 20px;box-shadow:0 6px 24px rgba(0,0,0,0.12);width:360px}
+      h1{font-size:1.1rem;margin:0 0 12px}
+      .muted{color:#6b7280;margin-bottom:16px}
+      .row{display:flex;gap:10px}
+      input{flex:1;padding:10px 12px;border:2px solid #e9edf1;border-radius:8px}
+      button{padding:10px 14px;border-radius:8px;border:0;background:#0284c7;color:#fff;cursor:pointer}
+      .error{color:#dc2626;margin-top:10px;min-height:18px}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Uygulama Parolası / Lisans</h1>
+      <div id="trial" class="muted">Deneme süresi bilgisi yükleniyor…</div>
+      <div class="row"><input id="pwd" type="password" placeholder="Parola" /><button id="go">Giriş</button></div>
+      <hr style="margin:14px 0;border:none;border-top:1px solid #eee"/>
+      <div class="row"><input id="lic" type="text" placeholder="Lisans Anahtarı" /><button id="activate">Aktivasyon</button></div>
+      <div id="msg" class="error"></div>
+    </div>
+    <script>
+      const pwd = document.getElementById('pwd');
+      const btn = document.getElementById('go');
+      const msg = document.getElementById('msg');
+      btn.onclick = async () => {
+        msg.textContent = '';
+        const v = pwd.value || '';
+        const res = await window.auth.check(v);
+        if (!res || !res.ok) {
+          msg.textContent = res?.message || 'Parola geçersiz';
+          pwd.focus();
+        }
+      };
+      const licInput = document.getElementById('lic');
+      const activateBtn = document.getElementById('activate');
+      activateBtn.onclick = async () => {
+        msg.textContent = '';
+        const key = (licInput.value || '').trim();
+        if (!key) { msg.textContent = 'Lisans anahtarı giriniz'; return; }
+        const res = await window.auth.activateLicense(key);
+        if (!res || !res.ok) {
+          msg.textContent = res?.message || 'Lisans geçersiz';
+          licInput.focus();
+        }
+      };
+      const trialDiv = document.getElementById('trial');
+      (async ()=>{
+        try {
+          const info = await window.auth.trialInfo();
+          const days = Number(info?.daysElapsed || 0);
+          const remain = Math.max(0, 30 - days);
+          trialDiv.textContent = remain > 0 ? `Deneme süresi: ${remain} gün kaldı` : 'Deneme süresi doldu';
+        } catch {
+          trialDiv.textContent = '';
+        }
+      })();
+      pwd.addEventListener('keydown', (e)=>{ if(e.key==='Enter') btn.click(); });
+    </script>
+  </body>
+</html>

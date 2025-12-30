@@ -1,0 +1,60 @@
+{
+  "name": "tkm-miras",
+  "version": "3.0.0",
+  "description": "Türk Medeni Kanunu Miras Hesaplayıcı - Elektron Masaüstü Uygulaması",
+  "main": "main.js",
+  "author": "TKM",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:trial": "electron-builder",
+    "build:free": "node build-free.js"
+  },
+  "devDependencies": {
+    "canvas": "^3.2.0",
+    "electron": "^22.0.0",
+    "electron-builder": "^24.13.3",
+    "png-to-ico": "^3.0.1"
+  },
+  "dependencies": {
+    "@sentry/electron": "^5.0.0",
+    "dotenv": "^16.4.5",
+    "electron-updater": "^6.3.7",
+    "intro.js": "^8.3.2",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
+    "xlsx": "^0.18.5"
+  },
+  "build": {
+    "appId": "com.tkm.miras",
+    "productName": "TKM Miras Hesaplayıcı",
+    "artifactName": "TKM Miras Hesaplayıcı SERBEST Setup ${version}.exe",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "assets/**/*"
+    ],
+    "icon": "assets/icon.ico",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "license": "build/license_tr.txt",
+      "unicode": true,
+      "include": "build/installer.nsh"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "YOUR_GITHUB_OWNER",
+        "repo": "YOUR_REPO_NAME"
+      }
+    ]
+  }
+}

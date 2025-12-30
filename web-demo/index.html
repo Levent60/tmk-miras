@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TKM Miras Hesaplayıcı - Web Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 30px; }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; margin-bottom: 30px; }
+        .section { margin-bottom: 25px; }
+        .section h3 { color: #34495e; margin-bottom: 15px; font-size: 18px; }
+        label { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; }
+        input[type="checkbox"] { margin-right: 10px; width: 18px; height: 18px; }
+        input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; margin-bottom: 10px; }
+        .button { background: #3498db; color: white; padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; }
+        .button:hover { background: #2980b9; }
+        .results { margin-top: 30px; }
+        .result-item { background: #ecf0f1; padding: 15px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; }
+        .result-name { font-weight: 600; color: #2c3e50; }
+        .result-pay { color: #27ae60; font-weight: 700; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TKM Miras Hesaplayıcı</h1>
+        <p class="subtitle">Web Demo Versiyonu</p>
+
+        <div class="section">
+            <h3>Mirasçılar</h3>
+            <label><input type="checkbox" id="es"> Eş</label>
+            <label><input type="checkbox" id="anne"> Anne</label>
+            <label><input type="checkbox" id="baba"> Baba</label>
+            <label><input type="checkbox" id="cocukVar"> Çocuk var</label>
+            <div id="cocukSayisi" class="hidden">
+                <input type="number" id="cocukSayisiInput" min="1" value="1" placeholder="Çocuk sayısı">
+            </div>
+            <label><input type="checkbox" id="kardesVar"> Kardeş var</label>
+            <div id="kardesSayisi" class="hidden">
+                <input type="number" id="kardesSayisiInput" min="1" value="1" placeholder="Kardeş sayısı">
+            </div>
+        </div>
+
+        <button class="button" onclick="hesapla()">Hesapla</button>
+
+        <div id="results" class="results hidden"></div>
+    </div>
+
+    <script type="module">
+        import { hesaplaPaylar } from './inheritance.js';
+
+        window.hesapla = function() {
+            const es = document.getElementById('es').checked;
+            const anne = document.getElementById('anne').checked;
+            const baba = document.getElementById('baba').checked;
+            const cocukVar = document.getElementById('cocukVar').checked;
+            const kardesVar = document.getElementById('kardesVar').checked;
+
+            const cocuklar = [];
+            if (cocukVar) {
+                const sayı = parseInt(document.getElementById('cocukSayisiInput').value) || 1;
+                for (let i = 1; i <= sayı; i++) {
+                    cocuklar.push(`Çocuk ${i}`);
+                }
+            }
+
+            const kardesler = [];
+            if (kardesVar) {
+                const sayı = parseInt(document.getElementById('kardesSayisiInput').value) || 1;
+                for (let i = 1; i <= sayı; i++) {
+                    kardesler.push(`Kardeş ${i}`);
+                }
+            }
+
+            const paylar = hesaplaPaylar({ es, cocuklar, anne, baba, kardesler });
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>Miras Payları</h3>';
+            
+            paylar.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'result-item';
+                div.innerHTML = `
+                    <span class="result-name">${p.ad}</span>
+                    <span class="result-pay">%${p.pay.toFixed(3)}</span>
+                `;
+                resultsDiv.appendChild(div);
+            });
+
+            resultsDiv.classList.remove('hidden');
+        };
+
+        document.getElementById('cocukVar').addEventListener('change', function(e) {
+            document.getElementById('cocukSayisi').classList.toggle('hidden', !e.target.checked);
+        });
+
+        document.getElementById('kardesVar').addEventListener('change', function(e) {
+            document.getElementById('kardesSayisi').classList.toggle('hidden', !e.target.checked);
+        });
+    </script>
+</body>
+</html>

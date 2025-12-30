@@ -1,0 +1,73 @@
+name: Build and Release (Windows)
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Build Trial Version (signed)
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTO_UPDATE: '1'
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          npm run build:trial
+
+      - name: Build Free Version (signed)
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTO_UPDATE: '1'
+        run: |
+          npm run build:free
+
+      - name: Build Trial Portable Version
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTO_UPDATE: '1'
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          npm run build:portable:trial
+
+      - name: Build Free Portable Version
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTO_UPDATE: '1'
+        run: |
+          npm run build:portable:free
+
+      - name: Upload Release Artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist-trial/*.exe
+            dist-trial/*.blockmap
+            dist-free/*.exe
+            dist-free/*.blockmap
+            dist-trial-portable/*.exe
+            dist-free-portable/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

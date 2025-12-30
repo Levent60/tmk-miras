@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" fill="#0078D4" rx="32"/>
+  <g fill="#fff" transform="translate(128,128)">
+    <!-- Terazi çubuğu -->
+    <line x1="-80" y1="0" x2="80" y2="0" stroke="#fff" stroke-width="8"/>
+    <!-- Sol kefe -->
+    <circle cx="-80" cy="-40" r="20" fill="#fff"/>
+    <!-- Sağ kefe -->
+    <circle cx="80" cy="-40" r="20" fill="#fff"/>
+    <!-- Orta destek -->
+    <line x1="0" y1="0" x2="0" y2="60" stroke="#fff" stroke-width="8"/>
+  </g>
+</svg>
+</svg>

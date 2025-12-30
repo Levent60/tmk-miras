@@ -1,0 +1,100 @@
+body.blue{--bg:#e0f2fe;--card:#ffffff;--muted:#0369a1;--accent:#0284c7;--success:#16a34a;--danger:#dc2626}
+body.green{--bg:#f0fdf4;--card:#ffffff;--muted:#166534;--accent:#16a34a;--success:#16a34a;--danger:#dc2626}
+*{box-sizing:border-box}
+body{font-family:Inter,Segoe UI,Helvetica,Arial;font-size:16px;margin:0;background:var(--bg);color:#111}
+.container{max-width:1600px;margin:18px auto;padding:16px}
+
+/* Header */
+.app-header{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg, #ff4500, #ff8c00);color:#fff;padding:24px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.08);margin-bottom:16px}
+.brand{display:flex;gap:12px;align-items:center}
+.brand .title{font-weight:700;font-size:1.3rem}
+.brand .subtitle{font-size:1rem;opacity:0.85}
+.brand .fa-balance-scale{background:rgba(255,255,255,0.08);padding:10px;border-radius:8px}
+.header-actions .icon-btn{background:transparent;border:0;color:#fff;font-size:18px;padding:8px;border-radius:8px}
+
+.panel{background:var(--card);padding:18px;border-radius:10px;margin-bottom:12px;border:2px solid #e9edf1;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.section-header{display:flex;align-items:center;gap:10px;font-weight:700;padding-bottom:8px;border-left:4px solid var(--accent);margin-bottom:12px}
+.section-header i{color:var(--accent);background:#fff;padding:8px;border-radius:6px}
+
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.form-row{margin-bottom:10px}
+.form-row.small>label{min-width:200px; margin-bottom:4px;}
+.form-row.small select{min-width:180px;}
+.row.center{justify-content:center}
+.form-row input,.form-row select{flex:1;min-width:160px}
+.form-row .btn{flex:0 0 auto}
+.outputs input{flex:1}
+.actions-row{display:flex;gap:12px;margin-top:12px}
+.filters{margin-top:12px;gap:14px;flex-wrap:wrap}
+.filters .input-group{min-width:220px}
+
+select,input{padding:10px 12px;border:2px solid #e9edf1;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.05)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;border:1px solid transparent;background:#f3f4f6;cursor:pointer}
+.btn.primary{background:var(--accent);color:#000;border-color:rgba(0,0,0,0.04);box-shadow:0 6px 12px rgba(37,99,235,0.12)}
+.btn.big{padding:12px 22px;font-size:1rem;margin-bottom:16px}
+.btn.outline{background:#fff;border:1px solid #e6e9ee;box-shadow:0 2px 4px rgba(0,0,0,0.05)}
+.btn.small{padding:6px 10px;font-size:.9rem}
+.btn i{font-size:15px}
+
+.list{list-style:none;padding:0;margin:8px 0}
+.list li{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:8px;border:2px solid #f3f4f6;background:#fff;margin-bottom:8px;box-shadow:0 2px 6px rgba(0,0,0,0.05)}
+.muted{color:var(--muted);margin-left:8px}
+
+table{width:100%;border-collapse:collapse;margin-top:8px;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+table thead th{background:#3a3a3a;color:#fff;text-align:left;padding:12px;border-bottom:0}
+table td{padding:10px;border-bottom:1px solid #f3f4f6}
+
+@media (max-width:900px){.row{flex-direction:column;align-items:stretch}.form-row input,.form-row select{width:100%}}
+
+/* Dark modifier for header/panels */
+body.dark .app-header{background:#1f2937}
+body.dark .panel{background:#1f2937;color:#e6eef8}
+body.dark table thead th{background:#111}
+body.dark .section-header{border-left-color:#60a5fa}
+body.dark .btn.primary{background:var(--accent);color:#fff}
+body.dark .brand .subtitle{opacity:0.8}
+.row .small label{display:flex;align-items:center;gap:8px}
+.input-group{display:flex;align-items:center;gap:8px}
+.input-group .fa-tag{color:#ff6b6b}
+.input-group .fa-list{color:#4ecdc4}
+.input-group .fa-lira-sign{color:#45b7d1}
+.input-group .fa-minus-circle{color:#dc2626}
+.list li .fa-home{color:#8b5cf6}
+.list li .fa-money-bill-wave{color:#10b981}
+.list li .fa-gem{color:#f59e0b}
+.list li .fa-car{color:#ef4444}
+.list li .fa-ring{color:#ec4899}
+.list li .fa-chart-line{color:#3b82f6}
+.list li .fa-box{color:#6b7280}
+body.dark .brand .subtitle{opacity:0.8}
+/* Modal Stilleri */
+#licenseModal {
+  /* display kontrolü JavaScript'te yapılıyor */
+}
+#licenseModal input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-family: monospace;
+  font-size: 14px;
+}
+#licenseModal input:focus {
+  outline: none;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+}
+#licenseModal button {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+#licenseModal button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

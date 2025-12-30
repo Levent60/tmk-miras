@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+/npm-debug.log
+/yarn-error.log
+/yarn-debug.log*
+/package-lock.json
+/yarn.lock
+
+# Build outputs
+/dist
+/dist-trial
+/dist-free
+/dist-trial-portable
+/dist-free-portable
+/build
+/out
+
+# Development
+.env.backup
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Logs
+logs/
+*.log
+
+# Production keys (NEVER commit!)
+private-key.pem
+*.key
+
+# Temporary
+*.tmp
+temp/
+
+# Mobile-specific (Expo)
+tkm-miras-mobile/node_modules
+tkm-miras-mobile/.expo
+tkm-miras-mobile/dist
+tkm-miras-mobile/.env.local
