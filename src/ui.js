@@ -656,7 +656,11 @@ function mirasciBilgileriniTopla() {
     kardesler.push(ad);
   }
 
-  return { es, anne, baba, cocuklar, kardesler };
+  // Ölen mirasçı bilgileri
+  const hasDeadChild = document.getElementById("deadChildCheckbox")?.checked || false;
+  const deadChildHeirs = hasDeadChild ? Number(document.getElementById("deadChildHeirs")?.value || 1) : 0;
+
+  return { es, anne, baba, cocuklar, kardesler, hasDeadChild, deadChildHeirs };
 }
 
 function populateMirasciFiltre(data) {
@@ -1093,3 +1097,13 @@ try {
     setTimeout(() => startOnboarding(true), 700);
   }
 } catch {}
+
+// Ölen mirasçı checkbox event listener'ı
+const deadChildCheckbox = document.getElementById('deadChildCheckbox');
+const deadChildHeirsLabel = document.getElementById('deadChildHeirsLabel');
+
+if (deadChildCheckbox && deadChildHeirsLabel) {
+  deadChildCheckbox.addEventListener('change', (e) => {
+    deadChildHeirsLabel.style.display = e.target.checked ? 'block' : 'none';
+  });
+}

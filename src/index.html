@@ -110,6 +110,8 @@
         <div class="row form-row small">
           <label><i class="fa-solid fa-user"></i> <span data-key="esYasiyorMu">Eş yaşıyor mu?</span> <select id="es"><option value="evet" selected>Evet</option><option value="hayir">Hayır</option></select></label>
           <label><i class="fa-solid fa-child"></i> <span data-key="cocukSayisi">Çocuk sayısı</span> <input id="cocukSayisi" type="number" min="0" value="0" /></label>
+          <label style="margin-left:10px;"><input type="checkbox" id="deadChildCheckbox" /> <span style="font-size:0.9em;">Bir çocuk öldü (varisleri var)</span></label>
+          <label style="display:none; margin-left:10px;" id="deadChildHeirsLabel"><i class="fa-solid fa-users"></i> <span>Varis sayısı:</span> <input id="deadChildHeirs" type="number" min="1" value="1" /></label>
           <label><i class="fa-solid fa-female"></i> <span data-key="anne">Anne:</span> <select id="anne"><option value="evet" selected>Evet</option><option value="hayir">Hayır</option></select></label>
           <label><i class="fa-solid fa-male"></i> <span data-key="baba">Baba:</span> <select id="baba"><option value="evet" selected>Evet</option><option value="hayir">Hayır</option></select></label>
           <label><i class="fa-solid fa-users"></i> <span data-key="kardesSayisi">Kardeş sayısı</span> <input id="kardesSayisi" type="number" min="0" value="0" /></label>
