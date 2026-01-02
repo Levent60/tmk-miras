@@ -646,7 +646,21 @@ function mirasciBilgileriniTopla() {
     }
   }
 
-  return { es, anne, baba, cocuklar, kardesler, olmusCocuklar };
+  // Mirasçı red bilgileri
+  const mirascıRedCheckbox = document.getElementById('mirascıRedCheckbox');
+  const mirascıRedSecimi = document.getElementById('mirascıRedSecimi');
+  const mirascıRedAlanlar = [];
+  if (mirascıRedCheckbox?.checked && mirascıRedSecimi) {
+    for (let option of mirascıRedSecimi.selectedOptions) {
+      mirascıRedAlanlar.push(option.value);
+    }
+  }
+
+  // Vasiyetname bilgileri
+  const vasiyetnameCheckbox = document.getElementById('vasiyetnameCheckbox');
+  const vasiyetnamelerArray = vasiyetnameCheckbox?.checked ? vasiyetnameler : [];
+
+  return { es, anne, baba, cocuklar, kardesler, olmusCocuklar, mirascıRedAlanlar, vasiyetnamelerArray };
 }
 
 function populateMirasciFiltre(data) {
@@ -1137,5 +1151,84 @@ const deadChildHeirsLabel = document.getElementById('deadChildHeirsLabel');
 if (deadChildCheckbox && deadChildHeirsLabel) {
   deadChildCheckbox.addEventListener('change', (e) => {
     deadChildHeirsLabel.style.display = e.target.checked ? 'block' : 'none';
+  });
+}
+
+// ==========================
+// MIRASÇI RED KONTROLÜ
+// ==========================
+const mirascıRedCheckbox = document.getElementById('mirascıRedCheckbox');
+const mirascıRedKontrolleri = document.getElementById('mirascıRedKontrolleri');
+
+if (mirascıRedCheckbox && mirascıRedKontrolleri) {
+  mirascıRedCheckbox.addEventListener('change', (e) => {
+    mirascıRedKontrolleri.style.display = e.target.checked ? 'block' : 'none';
+  });
+}
+
+// ==========================
+// VASİYETNAME KONTROLÜ
+// ==========================
+const vasiyetnameCheckbox = document.getElementById('vasiyetnameCheckbox');
+const vasiyetnameKontrolleri = document.getElementById('vasiyetnameKontrolleri');
+const btnVasiyetnameEkle = document.getElementById('btnVasiyetnameEkle');
+const vasiyetnameListe = document.getElementById('vasiyetnameListe');
+let vasiyetnameler = [];
+
+if (vasiyetnameCheckbox && vasiyetnameKontrolleri) {
+  vasiyetnameCheckbox.addEventListener('change', (e) => {
+    vasiyetnameKontrolleri.style.display = e.target.checked ? 'block' : 'none';
+  });
+}
+
+if (btnVasiyetnameEkle) {
+  btnVasiyetnameEkle.addEventListener('click', () => {
+    const id = Date.now();
+    vasiyetnameler.push({ id, ad: '', tutar: 0, tip: 'TL' });
+    renderVasiyetnameler();
+  });
+}
+
+function renderVasiyetnameler() {
+  vasiyetnameListe.innerHTML = '';
+  vasiyetnameler.forEach((v, idx) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex; gap:8px; margin-bottom:8px; align-items:center;';
+    
+    const input1 = document.createElement('input');
+    input1.type = 'text';
+    input1.placeholder = 'Kişi adı';
+    input1.value = v.ad;
+    input1.style.flex = '1';
+    input1.addEventListener('change', (e) => { v.ad = e.target.value; });
+    
+    const input2 = document.createElement('input');
+    input2.type = 'number';
+    input2.placeholder = 'Tutar/Pay';
+    input2.value = v.tutar;
+    input2.min = '0';
+    input2.style.width = '100px';
+    input2.addEventListener('change', (e) => { v.tutar = Number(e.target.value); });
+    
+    const select = document.createElement('select');
+    select.innerHTML = '<option value="TL">₺ (TL)</option><option value="%">% (Pay)</option>';
+    select.value = v.tip;
+    select.style.width = '80px';
+    select.addEventListener('change', (e) => { v.tip = e.target.value; });
+    
+    const btnSil = document.createElement('button');
+    btnSil.textContent = '✕';
+    btnSil.className = 'btn small outline';
+    btnSil.style.padding = '4px 8px';
+    btnSil.addEventListener('click', () => {
+      vasiyetnameler.splice(idx, 1);
+      renderVasiyetnameler();
+    });
+    
+    div.appendChild(input1);
+    div.appendChild(input2);
+    div.appendChild(select);
+    div.appendChild(btnSil);
+    vasiyetnameListe.appendChild(div);
   });
 }

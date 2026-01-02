@@ -2,23 +2,79 @@ import { hesaplaPaylar } from "./inheritance.js";
 
 export function varlikBazliDagitim(varliklar, mirascilar) {
   const tumSonuclar = [];
+  
+  // Vasiyetname tutarını hesapla
+  let vasiyetnameToplamTL = 0;
+  let vasiyetnameToplamOran = 0;
+  if (mirascilar.vasiyetnamelerArray && mirascilar.vasiyetnamelerArray.length > 0) {
+    mirascilar.vasiyetnamelerArray.forEach(v => {
+      if (v.tip === 'TL') {
+        vasiyetnameToplamTL += v.tutar;
+      } else {
+        vasiyetnameToplamOran += v.tutar;
+      }
+    });
+  }
+  
+  // Temel TMK paylaşımını hesapla
   const paylar = hesaplaPaylar(mirascilar);
+  
+  // Toplam miras değerini hesapla
+  let toplamMiras = 0;
+  varliklar.forEach(varlik => {
+    const degerTl = varlik.degerTl != null ? varlik.degerTl : varlik.deger;
+    const borcTl = varlik.borcTl != null ? varlik.borcTl : (varlik.borc || 0);
+    const netDeger = degerTl - borcTl;
+    toplamMiras += netDeger;
+  });
 
   varliklar.forEach(varlik => {
     const degerTl = varlik.degerTl != null ? varlik.degerTl : varlik.deger;
     const borcTl = varlik.borcTl != null ? varlik.borcTl : (varlik.borc || 0);
     const netDeger = degerTl - borcTl;
 
+    // Vasiyetname varsa kalan mirastan pay dağıt
+    let dagitilacakMiras = netDeger;
+    
+    // TL bazlı vasiyetname kesintisi
+    if (vasiyetnameToplamTL > 0) {
+      // Her varlıktan proportional kesinti yap
+      const kesinti = (netDeger / toplamMiras) * Math.min(vasiyetnameToplamTL, toplamMiras);
+      dagitilacakMiras = netDeger - kesinti;
+    }
+
     paylar.forEach(p => {
+      let finalTutar = (dagitilacakMiras * p.pay / 100).toFixed(2);
       tumSonuclar.push({
         varlikTip: varlik.tip,
         varlikAdi: varlik.ad,
         mirasci: p.ad,
         pay: p.pay,
-        tutar: (netDeger * p.pay / 100).toFixed(2)
+        tutar: finalTutar
       });
     });
   });
+
+  // Vasiyetname alıcılarını ekle
+  if (mirascilar.vasiyetnamelerArray && mirascilar.vasiyetnamelerArray.length > 0) {
+    mirascilar.vasiyetnamelerArray.forEach(v => {
+      let tutar = 0;
+      if (v.tip === 'TL') {
+        tutar = v.tutar;
+      } else {
+        // Oransal hesaplama
+        tutar = (toplamMiras * v.tutar / 100).toFixed(2);
+      }
+      
+      tumSonuclar.push({
+        varlikTip: 'Vasiyetname',
+        varlikAdi: 'Vasiyetname',
+        mirasci: `${v.ad} (Vasiyetname)`,
+        pay: v.tip === '%' ? v.tutar : 0,
+        tutar: tutar
+      });
+    });
+  }
 
   return tumSonuclar;
 }

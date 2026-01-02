@@ -1,5 +1,16 @@
-export function hesaplaPaylar({ es, cocuklar, anne, baba, kardesler, olmusCocuklar = [] }) {
+export function hesaplaPaylar({ es, cocuklar, anne, baba, kardesler, olmusCocuklar = [], mirascıRedAlanlar = [] }) {
   const m = [];
+
+  // Mirasçı red durumunu kontrol et
+  let esVar = es && !mirascıRedAlanlar.includes('es');
+  let anneVar = anne && !mirascıRedAlanlar.includes('anne');
+  let babaVar = baba && !mirascıRedAlanlar.includes('baba');
+  
+  // Rededen mirasçıların payı diğerlerine dağılır
+  let redEdenPayOrani = 0;
+  if (es && mirascıRedAlanlar.includes('es')) redEdenPayOrani += 1; // Eş reddiyse payı artar
+  if (anne && mirascıRedAlanlar.includes('anne')) redEdenPayOrani += 1;
+  if (baba && mirascıRedAlanlar.includes('baba')) redEdenPayOrani += 1;
 
   // Eğer ölen çocuklar varsa, per stirpes kuralı uygula
   if (olmusCocuklar && olmusCocuklar.length > 0 && cocuklar.length > 0) {
@@ -12,7 +23,7 @@ export function hesaplaPaylar({ es, cocuklar, anne, baba, kardesler, olmusCocukl
     }
     const yaşayanCocukSayisi = yaşayanCocukIndeksleri.size;
 
-    if (es) {
+    if (esVar) {
       m.push({ ad: "Eş", pay: 25 });
       
       // Her yaşayan çocuğa eşit pay dağıt (toplam çocuk sayısına göre 75%)
@@ -49,7 +60,7 @@ export function hesaplaPaylar({ es, cocuklar, anne, baba, kardesler, olmusCocukl
   }
 
   if (cocuklar.length > 0) {
-    if (es) {
+    if (esVar) {
       m.push({ ad: "Eş", pay: 25 });
       const p = 75 / cocuklar.length;
       cocuklar.forEach(c => m.push({ ad: c, pay: p }));
@@ -60,25 +71,25 @@ export function hesaplaPaylar({ es, cocuklar, anne, baba, kardesler, olmusCocukl
     return m;
   }
 
-  if (es && (anne || baba)) {
+  if (esVar && (anneVar || babaVar)) {
     m.push({ ad: "Eş", pay: 50 });
-    const ebeveyn = (anne ? 1 : 0) + (baba ? 1 : 0);
-    if (anne) m.push({ ad: "Anne", pay: 50 / ebeveyn });
-    if (baba) m.push({ ad: "Baba", pay: 50 / ebeveyn });
+    const ebeveyn = (anneVar ? 1 : 0) + (babaVar ? 1 : 0);
+    if (anneVar) m.push({ ad: "Anne", pay: 50 / ebeveyn });
+    if (babaVar) m.push({ ad: "Baba", pay: 50 / ebeveyn });
     return m;
   }
 
-  if (es) return [{ ad: "Eş", pay: 100 }];
+  if (esVar) return [{ ad: "Eş", pay: 100 }];
 
-  if (anne || baba) {
-    const ebeveyn = (anne ? 1 : 0) + (baba ? 1 : 0);
-    if (anne) m.push({ ad: "Anne", pay: 100 / ebeveyn });
-    if (baba) m.push({ ad: "Baba", pay: 100 / ebeveyn });
+  if (anneVar || babaVar) {
+    const ebeveyn = (anneVar ? 1 : 0) + (babaVar ? 1 : 0);
+    if (anneVar) m.push({ ad: "Anne", pay: 100 / ebeveyn });
+    if (babaVar) m.push({ ad: "Baba", pay: 100 / ebeveyn });
     return m;
   }
 
   if (kardesler.length > 0) {
-    if (es) {
+    if (esVar) {
       m.push({ ad: "Eş", pay: 50 });
       const p = 50 / kardesler.length;
       kardesler.forEach(k => m.push({ ad: k, pay: p }));
