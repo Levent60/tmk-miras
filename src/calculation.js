@@ -1,10 +1,8 @@
 import { hesaplaPaylar } from "./inheritance.js";
 
-export function varlikBazliDagitim(varliklar, mirascilar, jurisdiction = "TR") {
+export function varlikBazliDagitim(varliklar, mirascilar) {
   const tumSonuclar = [];
-  const paylar = jurisdiction === "USA" 
-    ? hesaplaPaylarUSA(mirascilar)
-    : hesaplaPaylar(mirascilar);
+  const paylar = hesaplaPaylar(mirascilar);
 
   varliklar.forEach(varlik => {
     const degerTl = varlik.degerTl != null ? varlik.degerTl : varlik.deger;
