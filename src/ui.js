@@ -635,11 +635,18 @@ function mirasciBilgileriniTopla() {
     kardesler.push(ad);
   }
 
-  // Ölen mirasçı bilgileri
-  const hasDeadChild = document.getElementById("deadChildCheckbox")?.checked || false;
-  const deadChildHeirs = hasDeadChild ? Number(document.getElementById("deadChildHeirs")?.value || 1) : 0;
+  // Ölen çocuklar ve varisleri
+  const olmusCocuklar = [];
+  for (let i = 1; i <= cocukSayisi; i++) {
+    const checkbox = document.getElementById(`cocukOlu${i}`);
+    const varisInput = document.getElementById(`cocukVaris${i}`);
+    if (checkbox && checkbox.checked) {
+      const varisCount = Number(varisInput?.value || 1);
+      olmusCocuklar.push({ cocukIndex: i, varisCount });
+    }
+  }
 
-  return { es, anne, baba, cocuklar, kardesler, hasDeadChild, deadChildHeirs };
+  return { es, anne, baba, cocuklar, kardesler, olmusCocuklar };
 }
 
 function populateMirasciFiltre(data) {
@@ -858,23 +865,70 @@ if (btnCSV) {
 // ==========================
 const cocukSayisiInput = document.getElementById("cocukSayisi");
 const cocuklarDiv = document.getElementById("cocuklar");
+const cocukOlumDiv = document.getElementById("cocukOlumKontrolleri");
 
 cocukSayisiInput.oninput = () => {
   const sayi = Number(cocukSayisiInput.value);
   cocuklarDiv.innerHTML = "";
-
+  cocukOlumDiv.innerHTML = "";
+  
   if (sayi > 0) {
-    const p = document.createElement("p");
-    p.textContent = "Çocuk İsimleri (opsiyonel):";
-    cocuklarDiv.appendChild(p);
+    cocukOlumDiv.style.display = "block";
+    const baslik = document.createElement("p");
+    baslik.style.fontWeight = "600";
+    baslik.style.marginBottom = "8px";
+    baslik.textContent = "Ölen Çocuklar (Varisleri Belirtin):";
+    cocukOlumDiv.appendChild(baslik);
 
     for (let i = 1; i <= sayi; i++) {
-      const input = document.createElement("input");
-      input.type = "text";
-      input.id = `cocukAdi${i}`;
-      input.placeholder = `Çocuk ${i} Adı`;
-      cocuklarDiv.appendChild(input);
+      const container = document.createElement("div");
+      container.style.display = "flex";
+      container.style.alignItems = "center";
+      container.style.gap = "10px";
+      container.style.marginBottom = "8px";
+      
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = `cocukOlu${i}`;
+      
+      const label = document.createElement("label");
+      label.style.display = "flex";
+      label.style.alignItems = "center";
+      label.style.gap = "8px";
+      label.style.margin = "0";
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(`Çocuk ${i} öldü`));
+      
+      const varisInput = document.createElement("input");
+      varisInput.type = "number";
+      varisInput.id = `cocukVaris${i}`;
+      varisInput.min = "1";
+      varisInput.value = "1";
+      varisInput.placeholder = "Varis sayısı";
+      varisInput.style.width = "80px";
+      varisInput.style.display = "none";
+      
+      // Checkbox değiştiğinde varis input'unu göster/gizle
+      checkbox.addEventListener("change", () => {
+        varisInput.style.display = checkbox.checked ? "inline-block" : "none";
+      });
+      
+      container.appendChild(label);
+      container.appendChild(varisInput);
+      cocukOlumDiv.appendChild(container);
     }
+  }
+
+  const p = document.createElement("p");
+  p.textContent = "Çocuk İsimleri (opsiyonel):";
+  cocuklarDiv.appendChild(p);
+
+  for (let i = 1; i <= sayi; i++) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = `cocukAdi${i}`;
+    input.placeholder = `Çocuk ${i} Adı`;
+    cocuklarDiv.appendChild(input);
   }
 };
 

@@ -1,43 +1,49 @@
-export function hesaplaPaylar({ es, cocuklar, anne, baba, kardesler, hasDeadChild = false, deadChildHeirs = 0 }) {
+export function hesaplaPaylar({ es, cocuklar, anne, baba, kardesler, olmusCocuklar = [] }) {
   const m = [];
 
-  // Eğer ölen bir çocuk varsa, per stirpes kuralı uygula
-  if (hasDeadChild && deadChildHeirs > 0 && cocuklar.length > 0) {
-    // Ölü olmayan çocukları hesapla
-    const aliveCocuklar = cocuklar.length - 1;
-    
+  // Eğer ölen çocuklar varsa, per stirpes kuralı uygula
+  if (olmusCocuklar && olmusCocuklar.length > 0 && cocuklar.length > 0) {
+    // Yaşayan çocukları belirle
+    const yaşayanCocukIndeksleri = new Set();
+    for (let i = 1; i <= cocuklar.length; i++) {
+      if (!olmusCocuklar.some(oc => oc.cocukIndex === i)) {
+        yaşayanCocukIndeksleri.add(i);
+      }
+    }
+    const yaşayanCocukSayisi = yaşayanCocukIndeksleri.size;
+
     if (es) {
       m.push({ ad: "Eş", pay: 25 });
       
-      // Ölü çocuğun payını hesapla (yaşasaydı alacağı pay)
-      const deceasedChildShare = 75 / cocuklar.length;
-      
-      // Yaşayan çocuklara pay dağıt
-      const livingChildShare = 75 / cocuklar.length;
-      cocuklar.slice(0, aliveCocuklar).forEach(c => {
-        m.push({ ad: c, pay: livingChildShare });
-      });
-      
-      // Ölen çocuğun payını torununlara dağıt (per stirpes)
-      const heirSharePerChild = deceasedChildShare / deadChildHeirs;
-      for (let i = 1; i <= deadChildHeirs; i++) {
-        m.push({ ad: `Torun ${i} (Çocuk'dan)`, pay: heirSharePerChild });
+      // Her yaşayan çocuğa eşit pay dağıt (toplam çocuk sayısına göre 75%)
+      const yaşayanPayi = 75 / cocuklar.length;
+      for (const index of yaşayanCocukIndeksleri) {
+        m.push({ ad: cocuklar[index - 1], pay: yaşayanPayi });
       }
+      
+      // Ölen her çocuğun payını torununlara dağıt (per stirpes)
+      olmusCocuklar.forEach((oc, idx) => {
+        const deceasedShare = 75 / cocuklar.length;
+        const heirShare = deceasedShare / oc.varisCount;
+        for (let j = 1; j <= oc.varisCount; j++) {
+          m.push({ ad: `Torun ${j} (Çocuk ${oc.cocukIndex}'den)`, pay: heirShare });
+        }
+      });
     } else {
-      // Eş yoksa, ölen çocuğun payı torununlara gider
-      const deceasedChildShare = 100 / cocuklar.length;
-      
-      // Yaşayan çocuklara pay dağıt
-      const livingChildShare = 100 / cocuklar.length;
-      cocuklar.slice(0, aliveCocuklar).forEach(c => {
-        m.push({ ad: c, pay: livingChildShare });
-      });
-      
-      // Ölen çocuğun payını torununlara dağıt (per stirpes)
-      const heirSharePerChild = deceasedChildShare / deadChildHeirs;
-      for (let i = 1; i <= deadChildHeirs; i++) {
-        m.push({ ad: `Torun ${i} (Çocuk'dan)`, pay: heirSharePerChild });
+      // Eş yoksa
+      const yaşayanPayi = 100 / cocuklar.length;
+      for (const index of yaşayanCocukIndeksleri) {
+        m.push({ ad: cocuklar[index - 1], pay: yaşayanPayi });
       }
+      
+      // Ölen her çocuğun payını torununlara dağıt (per stirpes)
+      olmusCocuklar.forEach((oc, idx) => {
+        const deceasedShare = 100 / cocuklar.length;
+        const heirShare = deceasedShare / oc.varisCount;
+        for (let j = 1; j <= oc.varisCount; j++) {
+          m.push({ ad: `Torun ${j} (Çocuk ${oc.cocukIndex}'den)`, pay: heirShare });
+        }
+      });
     }
     return m;
   }
