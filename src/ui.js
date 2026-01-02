@@ -1218,8 +1218,8 @@ function renderVasiyetnameler() {
     
     const btnSil = document.createElement('button');
     btnSil.textContent = '✕';
-    btnSil.className = 'btn small outline';
-    btnSil.style.padding = '4px 8px';
+    btnSil.className = 'btn outline';
+    btnSil.style.cssText = 'padding:4px 8px; font-size:0.9em; cursor:pointer;';
     btnSil.addEventListener('click', () => {
       vasiyetnameler.splice(idx, 1);
       renderVasiyetnameler();
